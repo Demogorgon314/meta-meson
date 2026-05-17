@@ -1,0 +1,37 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Codex <codex@local>
+Date: Mon, 18 May 2026 00:00:00 +0800
+Subject: [PATCH] streambox-tv: enable low-latency HDMI setup in headless
+
+When HDMI TX is disconnected, streambox-tv enters headless capture-only
+mode and skips the whole STREAM_BOX low-latency initialization block.
+On VIM4 this leaves HDMI RX/VDIN unstable: /dev/video_cap opens, but no
+frames are produced.
+
+Run the same ALLM/VRR/game-mode setup in headless mode before StartTv()
+so capture-only operation follows the working hdmiin-demo path.
+---
+ test/streambox-tv.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/test/streambox-tv.c b/test/streambox-tv.c
+--- a/test/streambox-tv.c
++++ b/test/streambox-tv.c
+@@ -1987,7 +1987,7 @@
+          __FUNCTION__, video->game_mode, video->vrr_mode, video->hdmi_source);
+ 
+ #ifdef STREAM_BOX
+-    if (video->game_mode > 0 && !g_headless_mode) {
++    if (video->game_mode > 0) {
+         int ret;
+ 
+         /* Enable ALLM (Auto Low Latency Mode) - always enabled */
+@@ -2011,7 +2011,7 @@
+         int game_mode_value = (video->game_mode == 2) ? 3 : 1;
+         ret = SetGameMode(pTvClientWrapper, 1, game_mode_value);
+         if (ret == 0) {
+-            LOGD("Game Mode enabled successfully (game_mode_value=%d)\n", game_mode_value);
++            LOGD("Game Mode enabled successfully (game_mode_value=%d, headless=%d)\n", game_mode_value, g_headless_mode);
+         } else {
+             LOGD("Failed to enable Game Mode, ret=%d\n", ret);
+         }

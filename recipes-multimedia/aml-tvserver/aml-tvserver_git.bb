@@ -8,6 +8,7 @@ SRCREV = "678c41753a891004adbe1b67c155e7e7588de2e8"
 PV = "0.4+git${SRCPV}"
 SRC_URI +="file://tvserver.service"
 SRC_URI +="file://streambox-tv.service"
+SRC_URI +="file://0001-streambox-tv-enable-vdin-game-mode-in-headless.patch"
 
 DEPENDS = " libbinder sqlite3 aml-audio-service cjson"
 DEPENDS += "linux-uapi-headers"
