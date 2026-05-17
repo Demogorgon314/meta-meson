@@ -6,8 +6,10 @@ SRC_URI += " \
 
 do_configure:append () {
    echo "CONFIG_WEP=y" >> wpa_supplicant/.config
+   sed -i "s/^#CONFIG_SAE/CONFIG_SAE/;s/^#CONFIG_IEEE80211W/CONFIG_IEEE80211W/" wpa_supplicant/.config
+   grep -q "^CONFIG_SAE=y" wpa_supplicant/.config || echo "CONFIG_SAE=y" >> wpa_supplicant/.config
+   grep -q "^CONFIG_IEEE80211W=y" wpa_supplicant/.config || echo "CONFIG_IEEE80211W=y" >> wpa_supplicant/.config
    if ${@bb.utils.contains('DISTRO_FEATURES','miraclecast','true','false',d)}; then
    sed -i "s/^#CONFIG_P2P/CONFIG_P2P/;s/^#CONFIG_WIFI_DISPLAY/CONFIG_WIFI_DISPLAY/" wpa_supplicant/.config
    fi
 }
-
