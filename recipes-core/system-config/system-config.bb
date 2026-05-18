@@ -17,7 +17,7 @@ do_install() {
 
     if ${@bb.utils.contains('DISTRO_FEATURES', 'amlogic-tv', 'true', 'false', d)}; then
         cat >> ${D}/${bindir}/system-config.sh <<EOF
-echo 0x222 > /sys/class/hdmirx/hdmirx0/edid_select
+echo 0x111 > /sys/class/hdmirx/hdmirx0/edid_select
 echo reset0 > /sys/class/hdmirx/hdmirx0/debug
 EOF
     fi
