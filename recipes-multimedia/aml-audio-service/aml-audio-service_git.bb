@@ -30,10 +30,10 @@ S="${WORKDIR}/git"
 EXTRA_OEMAKE = "AML_BUILD_DIR=${B}"
 ENABLE_APLUGIN = "no"
 EXTRA_OEMAKE:append = "${@bb.utils.contains('ENABLE_APLUGIN', 'yes', ' aplugin=y', '', d)}"
-DEPENDS += " aml-amaudioutils liblog aml-audio-hal"
-DEPENDS += "${@bb.utils.contains('DISTRO_FEATURES', 'disable-audio-server', '', ' grpc grpc-native boost protobuf-native dolby-ms12', d)}"
+DEPENDS += " aml-amaudioutils liblog aml-audio-hal grpc boost protobuf"
+DEPENDS += "${@bb.utils.contains('DISTRO_FEATURES', 'disable-audio-server', '', ' grpc-native protobuf-native dolby-ms12', d)}"
 DEPENDS:append = "${@bb.utils.contains('ENABLE_APLUGIN', 'yes', ' alsa-lib', '', d)}"
-RDEPENDS:${PN} += " aml-amaudioutils liblog aml-audio-hal"
+RDEPENDS:${PN} += " aml-amaudioutils liblog aml-audio-hal grpc protobuf"
 RDEPENDS:${PN}-testapps += " ${PN} liblog"
 
 EXTRA_OEMAKE:append = "${@bb.utils.contains('DISTRO_FEATURES', 'disable-audio-server', ' rm_audioserver=y', '', d)}"
@@ -63,6 +63,7 @@ do_install() {
         install -m 755 -D ${B}/test_arc ${D}/usr/bin/
         install -m 644 -D ${B}/libaudio_client.so -t ${D}${libdir}
         install -m 644 -D ${S}/include/audio_if.h -t ${D}/usr/include
+        install -m 644 -D ${S}/include/audio_if_client.h -t ${D}/usr/include
 
         if ${@bb.utils.contains("ENABLE_APLUGIN", "yes", "true", "false", d)}; then
             install -m 644 -D ${B}/libasound_module_pcm_ahal.so -t ${D}${libdir}/alsa-lib/
@@ -72,7 +73,6 @@ do_install() {
             install -m 755 -D ${B}/audio_server -t ${D}/usr/bin/
             install -m 755 -D ${B}/audio_client_test -t ${D}/usr/bin/
             install -m 755 -D ${B}/audio_client_test_ac3 ${D}/usr/bin/
-            install -m 644 -D ${S}/include/audio_if_client.h -t ${D}/usr/include
             install -m 644 -D ${S}/include/audio_effect_if.h -t ${D}/usr/include
             install -m 644 -D ${S}/include/audio_effect_params.h -t ${D}/usr/include
 

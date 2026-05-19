@@ -10,16 +10,17 @@ SRC_URI +="file://tvserver.service"
 SRC_URI +="file://streambox-tv.service"
 SRC_URI +="file://0001-streambox-tv-enable-vdin-game-mode-in-headless.patch"
 
-DEPENDS = " libbinder sqlite3 aml-audio-service cjson"
+DEPENDS = " libbinder sqlite3 aml-audio-service cjson grpc protobuf boost liblog aml-amaudioutils"
 DEPENDS += "linux-uapi-headers"
 DEPENDS += "aml-ubootenv"
-RDEPENDS:${PN} = " liblog libbinder aml-audio-service aml-ubootenv cjson"
+RDEPENDS:${PN} = " liblog libbinder aml-audio-service aml-ubootenv cjson grpc protobuf aml-amaudioutils"
 do_configure[noexec] = "1"
 inherit autotools pkgconfig systemd
 S="${WORKDIR}/git"
 
 EXTRA_OEMAKE="OUT_DIR=${B} STAGING_DIR=${STAGING_DIR_TARGET} \
                 TARGET_DIR=${D} \
+                LDLIBS='-lgrpc++_unsecure -lprotobuf -lboost_system -lamaudioutils -llog' \
              "
 do_compile() {
     cd ${S}

@@ -16,8 +16,10 @@ SRC_URI += "file://0002-bluealsa-add-support-system-user.patch"
 S  = "${WORKDIR}/git"
 
 DEPENDS += "alsa-lib bluez5 dbus glib-2.0 sbc"
-DEPENDS += "aml-audio-service"
+DEPENDS += "aml-audio-service grpc protobuf boost liblog aml-amaudioutils"
 RDEPENDS:${PN} += "aml-audio-service"
+
+LIBS:append = " -lgrpc++_unsecure -lprotobuf -lboost_system -lamaudioutils -llog"
 
 
 PACKAGECONFIG ??= "aplay cli hcitop aml ${@bb.utils.filter('DISTRO_FEATURES', 'systemd', d)}"

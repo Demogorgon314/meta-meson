@@ -8,7 +8,7 @@ LIC_FILES_CHKSUM = "file://${COREBASE}/../meta-meson/license/AMLOGIC;md5=6c70138
 #For common patches
 SRC_URI:append = " ${@get_patch_list_with_path('${AML_PATCH_PATH}/multimedia/mediahal-sdk')}"
 
-DEPENDS += "aml-audio-service libdrm-meson"
+DEPENDS += "aml-audio-service libdrm-meson grpc protobuf boost liblog aml-amaudioutils"
 RDEPENDS:${PN} += "aml-audio-service libdrm-meson aml-amaudioutils"
 
 DEPENDS += "${@bb.utils.contains('DISTRO_FEATURES', 'wayland', 'wayland', '' ,d)}"
@@ -30,6 +30,7 @@ EXTRA_OEMAKE="STAGING_DIR=${STAGING_DIR_TARGET} \
                  TARGET_DIR=${D} \
                  EXTRA_CFLAGS=-I${S}/prebuilt/${TA_TARGET}/include/ \
                  EXTRA_LDFLAGS=-L${S}/prebuilt/${ARM_TARGET}/ \
+                               -lgrpc++_unsecure -lprotobuf -lboost_system -lamaudioutils -llog \
                                "
 do_compile(){
     cd ${S}/example/AmTsPlayerExample

@@ -15,9 +15,10 @@ do_compile[noexec] = "1"
 do_populate_lic[noexec] = "1"
 
 do_install() {
-    mv  ${WORKDIR}/partition_table_*.txt ${WORKDIR}/${PARTITION_TABLE}
+    if [ ! -f ${WORKDIR}/${PARTITION_TABLE} ]; then
+        cp  ${WORKDIR}/partition_table_*.txt ${WORKDIR}/${PARTITION_TABLE}
+    fi
     ${S}/makegpt -o gpt_out.bin -s 16G -v 2 --partitions ${WORKDIR}/${PARTITION_TABLE}
     mkdir -p ${DEPLOY_DIR_IMAGE}
     install -m 0644 gpt_out.bin   ${DEPLOY_DIR_IMAGE}/gpt.img
 }
-
